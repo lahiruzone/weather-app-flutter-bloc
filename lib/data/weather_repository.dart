@@ -17,7 +17,7 @@ class FakeWeatherRepository implements WeatherRepository {
         final random = Random();
 
         if (random.nextBool()) {
-          // throw NetworkError();
+          throw NetworkError();
         }
 
         cachedTempCelsius = 20 + random.nextInt(15) + random.nextDouble();
@@ -30,7 +30,13 @@ class FakeWeatherRepository implements WeatherRepository {
 
   @override
   Future<Weather> fetchWeather(String cityName) {
-    // TODO: implement fetchWeather
-    return null;
+    return Future.delayed(Duration(seconds: 1), () {
+      return Weather(
+          cityName: cityName,
+          temperatureCelsius: cachedTempCelsius,
+          temperatureFarenheit: cachedTempCelsius * 1.8 + 32);
+    });
   }
 }
+
+class NetworkError extends Error{}
