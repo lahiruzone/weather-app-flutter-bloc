@@ -9,7 +9,7 @@ class Weather extends Equatable {
   Weather(
       {@required this.cityName,
       @required this.temperatureCelsius,
-      @required this.temperatureFarenheit});
+      this.temperatureFarenheit});
 
   @override
   List<Object> get props =>
