@@ -1,42 +1,35 @@
 import 'dart:math';
 
-import 'package:weather_bloc/model/weather.dart';
+import 'model/weather.dart';
 
 abstract class WeatherRepository {
+  /// Throws [NetworkException].
   Future<Weather> fetchWeather(String cityName);
-  Future<Weather> fetchDetailWeather(String cityName);
 }
 
 class FakeWeatherRepository implements WeatherRepository {
-  double cachedTempCelsius;
   @override
-  Future<Weather> fetchDetailWeather(String cityName) {
+  Future<Weather> fetchWeather(String cityName) {
+    // Simulate network delay
     return Future.delayed(
       Duration(seconds: 1),
       () {
         final random = Random();
 
+        // Simulate some network exception
         if (random.nextBool()) {
-          throw NetworkError();
+          throw NetworkException();
         }
 
-        cachedTempCelsius = 20 + random.nextInt(15) + random.nextDouble();
-
+        // Return "fetched" weather
         return Weather(
-            cityName: cityName, temperatureCelsius: cachedTempCelsius);
+          cityName: cityName,
+          // Temperature between 20 and 35.99
+          temperatureCelsius: 20 + random.nextInt(15) + random.nextDouble(),
+        );
       },
     );
   }
-
-  @override
-  Future<Weather> fetchWeather(String cityName) {
-    return Future.delayed(Duration(seconds: 1), () {
-      return Weather(
-          cityName: cityName,
-          temperatureCelsius: cachedTempCelsius,
-          temperatureFarenheit: cachedTempCelsius * 1.8 + 32);
-    });
-  }
 }
 
-class NetworkError extends Error{}
+class NetworkException implements Exception {}
